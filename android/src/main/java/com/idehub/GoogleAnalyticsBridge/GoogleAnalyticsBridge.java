@@ -484,6 +484,23 @@ public class GoogleAnalyticsBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void createNewSessionWithCustomDimensionValues(String trackerId, String screenName, ReadableMap dimensionIndexValues) {
+        Tracker tracker = getTracker(trackerId);
+
+        HitBuilders.ScreenViewBuilder hit = new HitBuilders.ScreenViewBuilder().setNewSession();
+
+        ReadableMapKeySetIterator iterator = dimensionIndexValues.keySetIterator();
+        while (iterator.hasNextKey()) {
+            String dimensionIndex = iterator.nextKey();
+            String dimensionValue = dimensionIndexValues.getString(dimensionIndex);
+            hit.setCustomDimension(Integer.parseInt(dimensionIndex), dimensionValue);
+        }
+
+        tracker.setScreenName(screenName);
+        tracker.send(hit.build());
+    }
+    
+    @ReactMethod
     public void dispatch(Promise promise) {
         GoogleAnalytics analytics = getAnalyticsInstance();
         try {
