@@ -252,6 +252,16 @@ export class GoogleAnalyticsTracker {
   }
 
   /**
+   * Create new session with custom dimensions.
+   * @param  {String} screenName The name of the current screen
+   * @param  {Object} customDimensionValues An object containing custom dimension key/value pairs
+   */
+  createNewSessionWithCustomDimensionValues(screenName, customDimensions) {
+    const formattedCustomDimensions = this.transformCustomDimensionsFieldsToIndexes(customDimensions);
+    GoogleAnalyticsBridge.createNewSessionWithCustomDimensionValues(this.id, screenName, formattedCustomDimensions);
+  }
+  
+  /**
    * This function lets you manually dispatch all hits which are queued.
    * Use this function sparingly, as it will normally happen automatically
    * as a batch.
