@@ -377,6 +377,20 @@ RCT_EXPORT_METHOD(createNewSession:(NSString *)trackerId screenName:(NSString *)
     [tracker send:[builder build]];
 }
 
+RCT_EXPORT_METHOD(createNewSessionWithCustomDimensionValues:(NSString *)trackerId screenName:(NSString *)screenName  dimensionIndexValues:(NSDictionary *)dimensionIndexValues)
+{
+    id<GAITracker> tracker = [[GAI sharedInstance] trackerWithTrackingId:trackerId];
+    
+    GAIDictionaryBuilder *builder = [GAIDictionaryBuilder createScreenView];
+    [builder set:@"start" forKey:kGAISessionControl];
+    
+    for (NSString *dimensionIndex in dimensionIndexValues)
+        [builder set:[dimensionIndexValues objectForKey:dimensionIndex] forKey:[GAIFields customDimensionForIndex:[dimensionIndex intValue]]];
+    
+    [tracker set:kGAIScreenName value:screenName];
+    [tracker send:[builder build]];
+}
+
 RCT_EXPORT_METHOD(dispatch:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     [[GAI sharedInstance] dispatchWithCompletionHandler:^void(GAIDispatchResult result){
